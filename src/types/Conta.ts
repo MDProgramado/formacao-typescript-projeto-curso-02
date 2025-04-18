@@ -2,6 +2,7 @@ import { GrupoTransacao } from "./GrupoTransacao.js";
 import { TipoTransacao } from "./TipoTransacao.js";
 import { Transacao } from "./Transacao.js";
 import { Armazenador } from "./Armazenador.js";
+import { ValidaDebito, ValidaDeposito } from "./Decorators.js";
 
 export class Conta {
     protected nome: string;
@@ -49,24 +50,14 @@ export class Conta {
         getDataAcesso(): Date {
             return new Date();
         }
-
+        @ValidaDebito //Decorator para validar o debito, usado no método debitar para validar o valor do debito
         debitar(valor: number): void {
-            if (valor <= 0) {
-                throw new Error("O valor a ser debitado deve ser maior que zero!");
-            }
-            if (valor > this.saldo) {
-                throw new Error("Saldo insuficiente!");
-            }
-        
            this.saldo -= valor;
             Armazenador.salvar("saldo", this.saldo.toString());
         }
 
+        @ValidaDeposito //Decorator para validar o deposito, usado no método depositar para validar o valor do deposito
         depositar(valor: number): void {
-            if (valor <= 0) {
-                throw new Error("O valor a ser depositado deve ser maior que zero!");
-            }
-        
             this.saldo += valor;
             Armazenador.salvar("saldo", this.saldo.toString());
         }
